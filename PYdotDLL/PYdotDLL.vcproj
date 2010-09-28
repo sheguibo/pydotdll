@@ -118,7 +118,7 @@
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -217,6 +217,18 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<Filter
+				Name="HookLib"
+				>
+				<Filter
+					Name="HDE32"
+					>
+					<File
+						RelativePath="..\HookLib\HDE32\hde32.c"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"

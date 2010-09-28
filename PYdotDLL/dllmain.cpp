@@ -1,18 +1,14 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
 #include <Python.h>
-#include <HookLib/HookLib.h>
-
-//HookProc( "nspr4", "PR_Write", fakePR_Write, &pPR_Write)) printf( "Hook Success !\n");
-
-extern "C"
-__declspec(dllexport)
-BOOL __stdcall InlineHook( void *_pFunctionAddress, void *newFunctionAddress, void *lpdwJmpBak)
-{
-	return HookProc( _pFunctionAddress, newFunctionAddress, lpdwJmpBak);
+//#include <HookLib/HookLib.h>
+extern "C" {
+	#include "../HookLib/HookLib.h"
 }
 
-//#pragma comment(linker,"/Entry:DllMain")
+#pragma comment( linker, "/EXPORT:InlineHook=_InlineHook")
+#pragma comment( linker, "/EXPORT:EatHook=_EatHook")
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
