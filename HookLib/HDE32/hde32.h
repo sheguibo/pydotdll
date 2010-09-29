@@ -1,7 +1,7 @@
 /*
  * Hacker Disassembler Engine 32
- * Copyright (c) 2006-2008, Veacheslav Patkov.
- * aLL rights reserved.
+ * Copyright (c) 2006-2009, Vyacheslav Patkov.
+ * All rights reserved.
  *
  * hde32.h: C/C++ header file
  *
@@ -19,7 +19,6 @@
  * and change next line to:
  *   #include "pstdint.h"
  */
-//#include <stdint.h>
 #include "pstdint.h"
 
 #define F_MODRM         0x00000001
@@ -30,9 +29,7 @@
 #define F_DISP8         0x00000020
 #define F_DISP16        0x00000040
 #define F_DISP32        0x00000080
-#define F_REL8          0x00000100
-#define F_REL16         0x00000200
-#define F_REL32         0x00000400
+#define F_RELATIVE      0x00000100
 #define F_2IMM16        0x00000800
 #define F_ERROR         0x00001000
 #define F_ERROR_OPCODE  0x00002000
@@ -89,11 +86,6 @@ typedef struct {
         uint16_t disp16;
         uint32_t disp32;
     } disp;
-    union {
-        uint8_t rel8;
-        uint16_t rel16;
-        uint32_t rel32;
-    } rel;
     uint32_t flags;
 } hde32s;
 
