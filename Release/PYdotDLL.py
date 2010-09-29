@@ -15,9 +15,6 @@ def PYdotDLL_UTILS_InlineHook(where, fake):
         hdll = ctypes.windll.kernel32.LoadLibraryA(dllname)
         where = ctypes.windll.kernel32.GetProcAddress(hdll, procname)
     if type(where) is int:
-        #origin = ctypes.c_long()
-        #ctypes.cdll.PYdotDLL.InlineHook(where, fake, ctypes.byref(origin))
-        #return origin.value
         return ctypes.cdll.PYdotDLL.InlineHook(where, fake)
     return 0
 
@@ -57,10 +54,10 @@ else:
     __file__ = traceback.extract_stack()[1][0]
     sys.path.insert(0,os.path.dirname(__file__))
     
-    #hdll = ctypes.windll.kernel32.LoadLibraryA("user32")
-    #where = ctypes.windll.kernel32.GetProcAddress(hdll, "MessageBoxW")
-    #ctypes.cdll.PYdotDLL.EatHook(hdll, where, 0)
-    #where = ctypes.windll.kernel32.GetProcAddress(hdll, "MessageBoxW")
+    hdll = ctypes.windll.kernel32.LoadLibraryA("ntdll")
+    where = ctypes.windll.kernel32.GetProcAddress(hdll, "LdrGetProcedureAddress")
+    ctypes.cdll.PYdotDLL.EatHook(hdll, where, 0x12345678)
+    where = ctypes.windll.kernel32.GetProcAddress(hdll, "LdrGetProcedureAddress")
     
     # Ensure and Open Console
     ctypes.windll.kernel32.AllocConsole()

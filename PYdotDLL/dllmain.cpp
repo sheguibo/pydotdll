@@ -8,6 +8,7 @@ extern "C" {
 
 #pragma comment( linker, "/EXPORT:InlineHook=_InlineHook")
 #pragma comment( linker, "/EXPORT:EatHook=_EatHook")
+#pragma comment( linker, "/EXPORT:IatHook=_IatHook")
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,

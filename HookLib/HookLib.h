@@ -22,7 +22,7 @@ BYTE* InlineHook( BYTE *where, BYTE *fake)
 	backup = (BYTE *)VirtualAlloc( 0, length, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	memcpy( backup, where, length);
 	*(backup + length) = '\xE9';
-	*(DWORD*)(backup + length + 1) = where-backup - 5;
+	*(DWORD*)(backup + length + 1) = where - backup - 5;
 
 	// hook
 	VirtualProtect( where, length, PAGE_EXECUTE_READWRITE, &dwOldProtect);
@@ -49,7 +49,7 @@ DWORD EatHook(BYTE *hDLL, DWORD where, DWORD fake)
 			pEat = (PIMAGE_EXPORT_DIRECTORY)(hDLL + pNtHdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 			dwAddrs = (DWORD*)(hDLL + pEat->AddressOfFunctions);
 			--dwAddrs;
-			while ( *dwAddrs++)
+			while ( *(++dwAddrs))
 			{
 				if ( *dwAddrs == where - (DWORD)hDLL)
 				{
@@ -63,6 +63,43 @@ DWORD EatHook(BYTE *hDLL, DWORD where, DWORD fake)
 	}
 
 	return 0;
+}
+
+
+DWORD IatHook(BYTE *hDLL, DWORD where, DWORD fake)
+{
+	PIMAGE_NT_HEADERS pNtHdr = 0;
+	PIMAGE_IMPORT_DESCRIPTOR pIats = 0;
+	DWORD *dwAddrs = 0;
+	DWORD dwOldProtect = 0;
+
+	if (((PIMAGE_DOS_HEADER)hDLL)->e_magic == IMAGE_DOS_SIGNATURE)
+	{
+		pNtHdr = (PIMAGE_NT_HEADERS)(hDLL + ((PIMAGE_DOS_HEADER)hDLL)->e_lfanew);
+		if ( pNtHdr->Signature == IMAGE_NT_SIGNATURE)
+		{
+			pIats = (PIMAGE_IMPORT_DESCRIPTOR)(hDLL + pNtHdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+			--pIats;
+			while ( (++pIats)->FirstThunk)
+			{
+				dwAddrs = (DWORD*)(hDLL + pIats->FirstThunk);
+				--dwAddrs;
+				while ( *(++dwAddrs))
+				{
+					if ( *dwAddrs == where)
+					{
+						VirtualProtect( dwAddrs, 4, PAGE_EXECUTE_READWRITE, &dwOldProtect);
+						*dwAddrs = fake;
+						VirtualProtect( dwAddrs, 4, dwOldProtect, &dwOldProtect);
+						return where;
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+
 }
 
 
