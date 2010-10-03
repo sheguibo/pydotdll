@@ -27,7 +27,7 @@ def PYdotDLL_HOOK_Decorator(where, functype=ctypes.WINFUNCTYPE, **kw):
     def _hook(f):
         fargs = f.func_code.co_varnames[:f.func_code.co_argcount]
         gettype = lambda x: kw.get(x, ctypes.c_ulong)
-        ftype = functype(gettype('restype'), *tuple([gettype(x) for x in fargs]))
+        ftype = functype(gettype('restype'), *[gettype(x) for x in fargs])
         fake = ftype(f)
         origin = PYdotDLL_UTILS_InlineHook(where, fake)
         if origin:
