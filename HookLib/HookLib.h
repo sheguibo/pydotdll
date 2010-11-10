@@ -13,13 +13,11 @@ BYTE* InlineHook( BYTE *where, BYTE *fake)
 	DWORD dwOldProtect = 0;
 	hde32s hs;
 
-	do
-	{
+	while ( length < 5)
 		length += hde32_disasm( where + length, &hs);
-	} while ( length < 5);
 
 	// backup
-	backup = (BYTE *)VirtualAlloc( 0, length, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	backup = (BYTE *)VirtualAlloc( 0, length + 5, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	memcpy( backup, where, length);
 	*(backup + length) = '\xE9';
 	*(DWORD*)(backup + length + 1) = where - backup - 5;
@@ -99,7 +97,6 @@ DWORD IatHook(BYTE *hDLL, DWORD where, DWORD fake)
 	}
 
 	return 0;
-
 }
 
 

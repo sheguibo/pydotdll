@@ -21,12 +21,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		char dllpath[MAX_PATH] = {0};
 		char pycode[1024*5] = {0};
 
-		Py_Initialize();
 		GetModuleFileNameA( hModule, dllpath, sizeof(dllpath));
+
+		Py_Initialize();
+
 		*strrchr( dllpath, '.') = 0;
 		sprintf( pycode, "execfile('%s.py')", dllpath);
-
 		PyRun_SimpleString(pycode);
+
 		PyEval_SaveThread();
 
 	}
